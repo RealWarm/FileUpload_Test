@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+	
+		<!-- Root Context: defines shared resources visible to all other web components -->
+		<bean 
+			id="dataSource" 
+			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			
+			<property 
+				name="driverClassName" 
+				value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
+			
+			<!-- <property 
+				name="url" 
+				value="jdbc:log4jdbc:mysql://127.0.0.1:3306/cen_market?
+					useSSL=false&amp;characterEncoding=euckr&amp;
+					useUnicode=true&amp;mysqlEncoding=euckr&amp;
+					allowPublicKeyRetrieval=true"/> -->
+			<property name="url"
+					  value="jdbc:mysql://127.0.0.1:3306/cen_market?serverTimezone=UTC"/>
+			
+			<property name="username" value="root"/>
+			<property name="password" value="mysql"/>
+		</bean>
+	
+	          <!-- id: 빈객체의 식별자 ... 이름!    -->
+	    <bean  
+	        id="sqlSessionFactory"            
+	        class="org.mybatis.spring.SqlSessionFactoryBean">
+	        
+	        <property  name="dataSource" ref="dataSource"/>
+	        
+	        <property  name="configLocation"
+	                   value="classpath:/mybatis-config.xml"/>  <!-- classpath: WEB-INF/classes 여기서 / < 도큐먼트 루트가 아니라  WEB-INF/classes <<여기임 -->
+	                   
+	        <property  name="mapperLocations"
+	                   value="classpath:mappers/**/*Mapper.xml"/>
+	   </bean>
+	   
+	     <!-- DAO 구현객체가 MyBatis framework에 의존하고 있고,
+	     DAO 구현객체를 생성하려면, 의존하고있는 MyBatis의 SqlSessionTemplate
+	            타입의 구체를 주입받아서 DAO 구현 클래스를 만들수 있음 -->
+	   
+	     <bean id="sqlSession"
+	         class="org.mybatis.spring.SqlSessionTemplate"
+	         destroy-method="clearCache">
+	       
+	       <constructor-arg       
+	          name="sqlSessionFactory"
+	          ref="sqlSessionFactory"/>
+	     </bean>
+	     
+	     <!-- 파일 업로드 -->
+		 <bean id="multipartResolver" 
+		 	   class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+			<!--  파일업로드 용량 (10MB)-->
+		 	<property name="maxUploadSize" value="10485760"/>
+		 	<property name="defaultEncoding" value="UTF-8" />
+		</bean>
+		  
+		 <!--  파일업로드 디렉토리 설정 -->
+		 <bean id="uploadPath" class="java.lang.String">
+		 	<constructor-arg value="C:\App\eclipse-jee-2019-03-R-win32-x86_64\eclipse\workspace2\test\src\main\webapp\resources\upPicture"/>
+		 </bean>
+	     
+	     
+	     
+		
+</beans>

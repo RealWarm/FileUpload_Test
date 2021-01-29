@@ -1,0 +1,16 @@
+package com.acorn.persistence;
+
+import com.acorn.domain.MemberVO;
+
+public interface MemberDAO {
+
+	public String getTime();
+	
+	public void insertMember(MemberVO vo);
+	
+	public MemberVO readMember(String userid) throws Exception;
+	
+	public MemberVO redWithPW(String userid, String userpw) throws Exception;
+	
+	
+}//end interface
